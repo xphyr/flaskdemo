@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('development') {
+                        openshift.withProject('flask') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}"]).untilEach(1) {
                                 return (it.object().status.phase == "Running")
