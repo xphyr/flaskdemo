@@ -56,7 +56,7 @@ pipeline {
                             }
                             else {
                                 // create a new application from the templatePath
-                                openshift.newApp(templatePath).narrow('svc').expose();
+                                openshift.newApp(templatePath, "--strategy=docker").narrow('svc').expose();
                             }
                         }
                     }
