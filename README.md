@@ -16,3 +16,6 @@ docker run -d -p 27017:27017 -v ~/data:/data/db --name mongodb mongo
 python app.py
 ```
 
+## Dockerfile
+
+The Dockerfile builds on the UBI8 base images from Red Hat.
