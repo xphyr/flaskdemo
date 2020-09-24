@@ -1,5 +1,5 @@
 // path of the template to use
-def templatePath = 'veermuchandi/spring-mvn-base~https://github.com/xphyr/spring-sample-app'
+def templatePath = 'https://github.com/xphyr/flaskdemo'
 // name of the template that will be created
 def templateName = 'flaskdemo-app'
 // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
