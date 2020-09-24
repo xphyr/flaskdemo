@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject() {
+                        openshift.withProject('flask') {
                             echo "Using project: ${openshift.project()}"
                         }
                     }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject() {
+                        openshift.withProject('flask') {
                             // delete everything with this template label
                             openshift.selector("all", [ template : templateName ]).delete()
                             // delete any secrets with this template label
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject() {
+                        openshift.withProject('flask') {
                             if (openshift.selector("bc", templateName).exists()) {
                                 openshift.selector("bc", templateName).startBuild();
                             }
@@ -67,7 +67,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject() {
+                        openshift.withProject('flask') {
                             def builds = openshift.selector("bc", templateName).related('builds')
                             builds.untilEach(1) {
                                 return (it.object().status.phase == "Complete")

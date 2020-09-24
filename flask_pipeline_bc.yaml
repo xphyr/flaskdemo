@@ -1,0 +1,13 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: "flask-sample-app-pipeline"
+spec:
+  serviceAccount: builder
+  source:
+    git:
+        uri: https://github.com/xphyr/flaskdemo
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: Jenkinsfile
