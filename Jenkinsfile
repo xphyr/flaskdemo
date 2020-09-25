@@ -46,7 +46,8 @@ pipeline {
                 expression {
                     openshift.withCluster() {
                         openshift.withProject('flaskdemo') {
-                        return !openshift.selector("dc", "mongodb").exists() 
+                            return !openshift.selector("dc", "mongodb").exists() 
+                        }
                     }
                 }
             }
