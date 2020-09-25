@@ -43,9 +43,10 @@ pipeline {
 
         stage('database setup'){
             when {
-                openshift.withCluster() {
-                    openshift.withProject('flaskdemo') {
-                        expression { !openshift.selector("dc", "mongodb").exists() }
+                expression {
+                    openshift.withCluster() {
+                        openshift.withProject('flaskdemo') {
+                        return !openshift.selector("dc", "mongodb").exists() 
                     }
                 }
             }
