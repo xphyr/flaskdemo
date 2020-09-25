@@ -42,21 +42,16 @@ pipeline {
         } // stage
 
         stage('database setup'){
-            when {
-                expression {
+            steps {
+                script {
                     openshift.withCluster() {
                         openshift.withProject('flaskdemo') {
-                            return !openshift.selector("dc", "mongodb").exists() 
+                            if !openshift.selector("dc", "mongodb").exists() {
+                                openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
+                            }
                         }
                     }
-                }
-            }
-            steps {
-                openshift.withCluster() {
-                    openshift.withProject('flaskdemo') {
-                        openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
-                    }
-                }
+                }  
             }
         }
 
