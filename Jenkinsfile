@@ -46,7 +46,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('flaskdemo') {
-                            if !openshift.selector("dc", "mongodb").exists() {
+                            if (!openshift.selector("dc", "mongodb").exists()) {
                                 openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             }
                         }
