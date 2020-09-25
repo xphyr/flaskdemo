@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('flask') {
+                        openshift.withProject('flaskdemo') {
                             echo "Using project: ${openshift.project()}"
                         }
                     }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('flask') {
+                        openshift.withProject('flaskdemo') {
                             // delete everything with this template label
                             openshift.selector("all", [ template : templateName ]).delete()
                             // delete any secrets with this template label
@@ -41,11 +41,28 @@ pipeline {
             } // steps
         } // stage
 
+        stage('database setup'){
+            when {
+                openshift.withCluster() {
+                    openshift.withProject('flaskdemo') {
+                        expression { !openshift.selector("dc", "mongodb").exists() }
+                    }
+                }
+            }
+            steps {
+                openshift.withCluster() {
+                    openshift.withProject('flaskdemo') {
+                        openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
+                    }
+                }
+            }
+        }
+
         stage('create') {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('flask') {
+                        openshift.withProject('flaskdemo') {
                             if (openshift.selector("bc", templateName).exists()) {
                                 openshift.selector("bc", templateName).startBuild();
                             }
@@ -62,7 +79,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('flask') {
+                        openshift.withProject('flaskdemo') {
                             def builds = openshift.selector("bc", templateName).related('builds')
                             builds.untilEach(1) {
                                 return (it.object().status.phase == "Complete")
@@ -76,7 +93,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('flask') {
+                        openshift.withProject('flaskdemo') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}"]).untilEach(1) {
                                 return (it.object().status.phase == "Running")
