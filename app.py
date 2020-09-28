@@ -21,8 +21,7 @@ else:
 	# client = MongoClient("mongodb://admin:" + ":" + mongopass + "@" + mongoserver + ":" + mongoport) #host uri
 	client = MongoClient(mongoserver,
 	                     username="admin",
-	                     password=mongopass,
-						 authSource='mongodb')
+	                     password=mongopass)
 
 db = client.mymongodb    #Select the database
 todos = db.todo #Select the collection name
