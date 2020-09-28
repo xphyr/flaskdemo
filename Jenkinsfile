@@ -81,8 +81,9 @@ pipeline {
                                                         ["name":"flaskdemo",
                                                          "resources":[:],
                                                          "envFrom":[
-                                                            "secretRef": [
+                                                            ["secretRef": [
                                                                 ["name": "mongodb"]
+                                                            ]
                                                             ]
                                                           ]
                                                         ]
