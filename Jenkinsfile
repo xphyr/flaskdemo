@@ -203,7 +203,6 @@ pipeline {
                 } // script
             } // steps
         } // stage
-        /* - we will remove this later
         stage('Promote to Production') {
             steps {
                 input "Shall we promote to production?"
@@ -213,8 +212,8 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        // openshift.withProject('development') {
-                            openshift.tag("development/${templateName}:latest", "production/${templateName}-production:latest")
+                        // openshift.withProject('flaskdemo') {
+                            openshift.tag("flaskdemo/${templateName}:latest", "production/${templateName}-production:latest")
                         // }
                     }
                 } // script
@@ -234,7 +233,36 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('production') {
+                            openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-production:latest").narrow('svc').expose()
+                            def deploymentPatch = [
+                                        "metadata":[
+                                            "name":"flaskdemo-production",
+                                            "namespace":"production"
+                                        ],
+                                        "apiVersion":"apps/v1",
+                                        "kind":"Deployment",
+                                        "spec":[
+                                            "template":[
+                                                "metadata":[:],
+                                                "spec":[
+                                                    "containers":[
+                                                        ["name":"flaskdemo-production",
+                                                         "resources":[:],
+                                                         "envFrom":[
+                                                            ["secretRef": [
+                                                                "name": "mongodb"
+                                                            ]
+                                                            ]
+                                                          ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                sleep(10)
+                            openshift.apply(deploymentPatch)
                         }
                     }
                 }
@@ -254,6 +282,5 @@ pipeline {
                 } // script
             } // steps
         } // stage
-        we will remove this line later */
     } // stages
 } // pipeline
