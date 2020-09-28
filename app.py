@@ -10,7 +10,7 @@ heading = "TODO Reminder with Flask and MongoDB"
 mongoserver = os.getenv("MONGODB_SERVICE_HOST", default = "127.0.0.1")
 mongoport = os.getenv("MONGODB_SERVICE_PORT", default = "27017")
 mongouser = os.getenv("database-user", default = "UNDEFINED")
-mongopass = os.getenv("database-admin-password", default = "UNDEFINED")
+mongopass = os.getenv("database-password", default = "UNDEFINED")
 
 if (mongouser=="UNDEFINED"):
 	print(' Connecting with mongodb://' + mongoserver + ':' + mongoport )
@@ -18,7 +18,10 @@ if (mongouser=="UNDEFINED"):
 else:
 	print(' Connecting with mongodb://admin:' + mongopass + "@" + mongoserver + ':' + mongoport )
 	# we have auth information, we need to use this to connect to the database
-	client = MongoClient("mongodb://admin:" + ":" + mongopass + "@" + mongoserver + ":" + mongoport) #host uri
+	# client = MongoClient("mongodb://admin:" + ":" + mongopass + "@" + mongoserver + ":" + mongoport) #host uri
+	client = MongoClient(mongoserver,
+	                     username=mongouser,
+	                     password=mongopass)
 
 db = client.mymongodb    #Select the database
 todos = db.todo #Select the collection name
