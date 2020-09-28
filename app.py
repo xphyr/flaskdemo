@@ -13,8 +13,10 @@ mongouser = os.getenv("database-user", default = "UNDEFINED")
 mongopass = os.getenv("database-password", default = "UNDEFINED")
 
 if (mongouser=="UNDEFINED"):
+	print(' Connecting with mongodb://' + mongoserver + ':' + mongoport )
 	client = MongoClient("mongodb://" + mongoserver + ":" + mongoport) #host uri
 else:
+	print(' Connecting with mongodb://' + mongouser + ":" + mongopass + "@" + mongoserver + ':' + mongoport )
 	# we have auth information, we need to use this to connect to the database
 	client = MongoClient("mongodb://"+ mongouser + ":" + mongopass + "@" + mongoserver + ":" + mongoport) #host uri
 
