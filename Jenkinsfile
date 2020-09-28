@@ -158,7 +158,8 @@ pipeline {
                             openshift.newApp("${templateName}-staging:latest").narrow('svc').expose()
                             def deploymentPatch = [
                                         "metadata":[
-                                            "name":"flaskdemo"
+                                            "name":"flaskdemo",
+                                            "namespace":"testing"
                                         ],
                                         "apiVersion":"apps/v1",
                                         "kind":"Deployment",
