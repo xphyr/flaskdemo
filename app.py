@@ -16,7 +16,7 @@ if (mongouser=="UNDEFINED"):
 	print(' Connecting with mongodb://' + mongoserver + ':' + mongoport )
 	client = MongoClient("mongodb://" + mongoserver + ":" + mongoport) #host uri
 else:
-	print(' Connecting with mongodb://admin:' + mongopass + "@" + mongoserver + ':' + mongoport + "/mymongodb )
+	print(' Connecting with mongodb://admin:' + mongopass + "@" + mongoserver + ':' + mongoport + "/mymongodb" )
 	# we have auth information, we need to use this to connect to the database
 	# client = MongoClient("mongodb://admin:" + ":" + mongopass + "@" + mongoserver + ":" + mongoport) #host uri
 	client = MongoClient(mongoserver,
