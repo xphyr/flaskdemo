@@ -78,12 +78,12 @@ pipeline {
                                                 "metadata":[:],
                                                 "spec":[
                                                     "containers":[
-                                                            "name":"flaskdemo",
-                                                            "envFrom":[
-                                                                secretRef: [
-                                                                    name: mongodb
-                                                                ]
+                                                        "name":"flaskdemo",
+                                                        "envFrom":[
+                                                            "secretRef": [
+                                                                "name": "mongodb"
                                                             ]
+                                                        ]
                                                     ]
                                                 ]
                                             ]
