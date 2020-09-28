@@ -182,6 +182,7 @@ pipeline {
                                             ]
                                         ]
                                     ]
+                                sleep(10)
                                 openshift.apply(deploymentPatch)
                         }
                     }
