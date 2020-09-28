@@ -81,7 +81,7 @@ pipeline {
                                                         "name":"flaskdemo",
                                                         "envFrom":[
                                                             "secretRef": [
-                                                                "name": "mongodb"
+                                                                ["name": "mongodb"]
                                                             ]
                                                         ]
                                                     ]
