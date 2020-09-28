@@ -66,6 +66,7 @@ pipeline {
                             else {
                                 // create a new application from the templatePath
                                 openshift.newApp(templatePath, "--strategy=docker").narrow('svc').expose();
+                                // now update the deployment to have the mongodb secrets
                                 def deploymentPatch = [
                                         "metadata":[
                                             "name":"flaskdemo",
@@ -127,13 +128,13 @@ pipeline {
                 } // script
             } // steps
         } // stage
-        /* - we will remove this later
+        
         stage('Tag for Staging') {
             steps {
                 script {
                     openshift.withCluster() {
-                        // openshift.withProject('development') {
-                            openshift.tag("development/${templateName}:latest", "testing/${templateName}-staging:latest")
+                        // openshift.withProject('flaskdemo') {
+                            openshift.tag("flaskdemo/${templateName}:latest", "testing/${templateName}-staging:latest")
                         // }
                     }
                 } // script
@@ -153,7 +154,35 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('testing') {
+                            openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-staging:latest").narrow('svc').expose()
+                            def deploymentPatch = [
+                                        "metadata":[
+                                            "name":"flaskdemo",
+                                            "namespace":"flaskdemo"
+                                        ],
+                                        "apiVersion":"apps/v1",
+                                        "kind":"Deployment",
+                                        "spec":[
+                                            "template":[
+                                                "metadata":[:],
+                                                "spec":[
+                                                    "containers":[
+                                                        ["name":"flaskdemo",
+                                                         "resources":[:],
+                                                         "envFrom":[
+                                                            ["secretRef": [
+                                                                "name": "mongodb"
+                                                            ]
+                                                            ]
+                                                          ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                openshift.apply(deploymentPatch)
                         }
                     }
                 }
@@ -173,9 +202,10 @@ pipeline {
                 } // script
             } // steps
         } // stage
+        /* - we will remove this later
         stage('Promote to Production') {
             steps {
-                input "Shal we promote to production"
+                input "Shall we promote to production?"
             }
         }
         stage('Tag for Promotion') {

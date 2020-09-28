@@ -21,5 +21,4 @@ USER 1000
 # Use --host to make Flask listen on all networks inside the container
 # CMD python3 app.py
 ENTRYPOINT ["gunicorn", "--config", "gunicorn_config.py", "app:app"]
-# ENTRYPOINT ["./gunicorn_starter.sh"]
 EXPOSE 5000
