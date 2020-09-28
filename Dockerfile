@@ -1,6 +1,8 @@
 FROM registry.access.redhat.com/ubi8/python-36
 
-RUN pip3 install flask bson pymongo
+COPY . /app
+WORKDIR /app
+RUN pip3 install -r requirements.txt
 
 # set default flask app and environment
 ENV FLASK_APP flaskr
@@ -17,4 +19,5 @@ USER 1000
 # Default cmd when container is started
 # Create the database if it doesn't exist, then run the app
 # Use --host to make Flask listen on all networks inside the container
-CMD [ -f ../var/flaskr-instance/flaskr.sqlite ] || flask init-db ; flask run --host=0.0.0.0
+CMD python3 app.py
+EXPOSE 5000

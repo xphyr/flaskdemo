@@ -7,10 +7,10 @@ app = Flask(__name__)
 title = "TODO sample application with Flask and MongoDB"
 heading = "TODO Reminder with Flask and MongoDB"
 
-mongoserver = os.getenv(MONGO_SERVER, default = "127.0.0.1")
-mongoport = os.getenv(MONGO_PORT, default = "27017")
-mongouser = os.getenv(MONGO_USER, default = "UNDEFINED")
-mongopass = os.getenv(MONGO_PASS, default = "UNDEFINED")
+mongoserver = os.getenv("MONGO_SERVER", default = "127.0.0.1")
+mongoport = os.getenv("MONGO_PORT", default = "27017")
+mongouser = os.getenv("MONGO_USER", default = "UNDEFINED")
+mongopass = os.getenv("MONGO_PASS", default = "UNDEFINED")
 
 if (mongouser=="UNDEFINED"):
 	client = MongoClient("mongodb://" + mongoserver + ":" + mongoport) #host uri
