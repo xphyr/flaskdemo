@@ -82,7 +82,7 @@ pipeline {
                                                          "resources":[:],
                                                          "envFrom":[
                                                             ["secretRef": [
-                                                                ["name": "mongodb"]
+                                                                "name": "mongodb"
                                                             ]
                                                             ]
                                                           ]
