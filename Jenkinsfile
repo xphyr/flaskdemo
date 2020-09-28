@@ -168,7 +168,7 @@ pipeline {
                                                 "metadata":[:],
                                                 "spec":[
                                                     "containers":[
-                                                        ["name":"flaskdemo",
+                                                        ["name":"flaskdemo-staging",
                                                          "resources":[:],
                                                          "envFrom":[
                                                             ["secretRef": [
@@ -183,7 +183,7 @@ pipeline {
                                         ]
                                     ]
                                 sleep(10)
-                                openshift.apply(deploymentPatch)
+                            openshift.apply(deploymentPatch)
                         }
                     }
                 }
