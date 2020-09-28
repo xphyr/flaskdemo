@@ -19,5 +19,7 @@ USER 1000
 # Default cmd when container is started
 # Create the database if it doesn't exist, then run the app
 # Use --host to make Flask listen on all networks inside the container
-CMD python3 app.py
+# CMD python3 app.py
+ENTRYPOINT ["gunicorn", "--config", "gunicorn_config.py", "app:app"]
+# ENTRYPOINT ["./gunicorn_starter.sh"]
 EXPOSE 5000
