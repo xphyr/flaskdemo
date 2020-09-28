@@ -66,6 +66,30 @@ pipeline {
                             else {
                                 // create a new application from the templatePath
                                 openshift.newApp(templatePath, "--strategy=docker").narrow('svc').expose();
+                                def deploymentPatch = [
+                                        "metadata":[
+                                            "name":"flaskdemo",
+                                            "namespace":"flaskdemo"
+                                        ],
+                                        "apiVersion":"apps/v1",
+                                        "kind":"Deployment",
+                                        "spec":[
+                                            "template":[
+                                                "metadata":[:],
+                                                "spec":[
+                                                    "containers":[
+                                                            "name":"flaskdemo",
+                                                            "envFrom":[
+                                                                secretRef: [
+                                                                    name: mongodb
+                                                                ]
+                                                            ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                openshift.apply(deploymentPatch)
                             }
                         }
                     }

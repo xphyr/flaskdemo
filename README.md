@@ -37,7 +37,7 @@ We need to give the Jenkins service account permissions to edit configurations i
 
 ```
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
-    -n flaskdevelopment
+    -n flaskdemo
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
     -n flasktesting
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
