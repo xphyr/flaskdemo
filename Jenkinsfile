@@ -134,17 +134,17 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         // openshift.withProject('flaskdemo') {
-                            openshift.tag("flaskdemo/${templateName}:latest", "testing/${templateName}-staging:latest")
+                            openshift.tag("flaskdemo/${templateName}:latest", "flaskstaging/${templateName}-staging:latest")
                         // }
                     }
                 } // script
             } // steps
         } // stage
-        stage ('Create Testing Deployment') {
+        stage ('Create Staging Deployment') {
             when {
                 expression {
                     openshift.withCluster() {
-                        openshift.withProject('testing') {
+                        openshift.withProject('flaskstaging') {
                             return !openshift.selector("pod", [deployment : "${templateName}-staging"]).exists()
                         }
                     }
@@ -153,13 +153,13 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('testing') {
+                        openshift.withProject('flaskstaging') {
                             openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-staging:latest").narrow('svc').expose()
                             def deploymentPatch = [
                                         "metadata":[
                                             "name":"flaskdemo-staging",
-                                            "namespace":"testing"
+                                            "namespace":"flaskstaging"
                                         ],
                                         "apiVersion":"apps/v1",
                                         "kind":"Deployment",
@@ -193,7 +193,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('testing') {
+                        openshift.withProject('flaskstaging') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}-staging"]).untilEach(1) {
                                 return (it.object().status.phase == "Running")
@@ -213,7 +213,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         // openshift.withProject('flaskdemo') {
-                            openshift.tag("flaskdemo/${templateName}:latest", "production/${templateName}-production:latest")
+                            openshift.tag("flaskdemo/${templateName}:latest", "flaskproduction/${templateName}-production:latest")
                         // }
                     }
                 } // script
@@ -223,7 +223,7 @@ pipeline {
             when {
                 expression {
                     openshift.withCluster() {
-                        openshift.withProject('production') {
+                        openshift.withProject('flaskproduction') {
                             return !openshift.selector("pod", [deployment : "${templateName}-production"]).exists()
                         }
                     }
@@ -232,13 +232,13 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('production') {
+                        openshift.withProject('flaskproduction') {
                             openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-production:latest").narrow('svc').expose()
                             def deploymentPatch = [
                                         "metadata":[
                                             "name":"flaskdemo-production",
-                                            "namespace":"production"
+                                            "namespace":"flaskproduction"
                                         ],
                                         "apiVersion":"apps/v1",
                                         "kind":"Deployment",
@@ -272,7 +272,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject('production') {
+                        openshift.withProject('flaskproduction') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}-production"]).untilEach(1) {
                                 return (it.object().status.phase == "Running")
