@@ -154,7 +154,7 @@ pipeline {
                 expression {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
-                            return !openshift.selector("secret", [name : "my-cluster-name-secrets"]).exists()
+                            return !openshift.selector( 'secret/my-cluster-name-secrets' ).exists()
                         }
                     }
                 }
@@ -164,7 +164,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
                             openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
-                            while( !openshift.selector("secret", [name : "my-cluster-name-secrets"]).exists() ){
+                            while( !openshift.selector("secret", "my-cluster-name-secrets").exists() ){
                                 // starting up a mongo cluster takes a little time
                                 // we need to ensure that the secret exists before continuing
                                 sleep(10)
