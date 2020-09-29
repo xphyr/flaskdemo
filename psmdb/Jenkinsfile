@@ -8,7 +8,7 @@ def templateName = 'flaskdemo'
 pipeline {
     agent {
         node {
-        label 'base'
+        label 'maven'
         }
     }
     options {
