@@ -154,7 +154,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
-                            openshift.create( readfile( 'psmdb/test-psmdb.yaml' ) )
+                            openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
                             while( !openshift.selector("secret", [name : "my-cluster-name-secrets"]).exists() ){
                                 // starting up a mongo cluster takes a little time
                                 // we need to ensure that the secret exists before continuing
