@@ -165,14 +165,13 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
                             openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
-                            openshift.selector( 'PerconaServerMongoDB/my-cluster-name' ).untilEach(1) {
-                                return (it.object().status.state == "ready")
-                            }
+                            sleep(10)
+                            while( openshift.selector('PerconaServerMongoDB/my-cluster-name').object().status.state != "ready" ) {
                             // while( !openshift.selector("secret", "my-cluster-name-secrets").exists() ){
                                 // starting up a mongo cluster takes a little time
                                 // we need to ensure that the secret exists before continuing
-                            //    sleep(10)
-                            // }
+                               sleep(10)
+                            }
                         }
                     }
                 }
