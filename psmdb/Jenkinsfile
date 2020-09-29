@@ -149,7 +149,7 @@ pipeline {
                 } // script
             } // steps
         } // stage
-        stage ('Deploy MongoDB via Operator'){
+        stage ('Deploy MongoDB via Operator in Staging'){
             when {
                 expression {
                     openshift.withCluster() {
@@ -167,9 +167,6 @@ pipeline {
                             openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
                             sleep(10)
                             while( openshift.selector('PerconaServerMongoDB/my-cluster-name').object().status.state != "ready" ) {
-                            // while( !openshift.selector("secret", "my-cluster-name-secrets").exists() ){
-                                // starting up a mongo cluster takes a little time
-                                // we need to ensure that the secret exists before continuing
                                sleep(10)
                             }
                         }
@@ -258,6 +255,32 @@ pipeline {
                 } // script
             } // steps
         } // stage
+
+        stage ('Deploy MongoDB via Operator in Production'){
+            when {
+                expression {
+                    openshift.withCluster() {
+                        openshift.withProject('flaskproduction') {
+                            return !openshift.selector( 'PerconaServerMongoDB/my-cluster-name' ).exists()
+                        }
+                    }
+                }
+            }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject('flaskproduction') {
+                            openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
+                            sleep(10)
+                            while( openshift.selector('PerconaServerMongoDB/my-cluster-name').object().status.state != "ready" ) {
+                               sleep(10)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         stage ('Create Production Deployment') {
             when {
                 expression {
