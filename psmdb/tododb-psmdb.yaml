@@ -45,7 +45,7 @@ spec:
       hostPort: 0
     security:
       redactClientLogData: false
-      enableEncryption: true
+      enableEncryption: false
       encryptionKeySecret: tododb-mongodb-encryption-key
       encryptionCipherMode: AES256-CBC
     setParameter:

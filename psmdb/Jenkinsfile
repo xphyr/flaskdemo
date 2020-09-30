@@ -221,6 +221,9 @@ pipeline {
                                                                     "name": "tododb-secrets"
                                                                 ]    
                                                             ]
+                                                            ],[
+                                                                "name": "MONGODB_SERVICE_HOST",
+                                                                "value": "tododb-rs0"
                                                             ]
                                                             ]
 
