@@ -11,6 +11,7 @@ mongoserver = os.getenv("MONGODB_SERVICE_HOST", default = "127.0.0.1")
 mongoport = os.getenv("MONGODB_SERVICE_PORT", default = "27017")
 mongouser = os.getenv("database-user", default = "admin")
 mongopass = os.getenv("database-admin-password", default = "UNDEFINED")
+mongodb = os.getenv("MONGODB_DB_NAME", default = "mymongodb")
 
 if (mongoserver=="127.0.0.1"):
 	print(' Connecting with mongodb://' + mongoserver + ':' + mongoport )
@@ -20,7 +21,7 @@ else:
 	                     username=mongouser,
 	                     password=mongopass)
 
-db = client.mymongodb    #Select the database
+db = client[mongodb]    #Select the database
 todos = db.todo #Select the collection name
 
 def redirect_url():
