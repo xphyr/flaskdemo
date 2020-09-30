@@ -206,24 +206,23 @@ pipeline {
                                                     "containers":[
                                                         ["name":"flaskdemo-staging",
                                                          "resources":[:],
-                                                         [ "env":[[
+                                                         "env":[
                                                             "name": "database-user",
                                                             "valueFrom": [
                                                                 "secretKeyRef": [
                                                                     "key": "MONGODB_CLUSTER_ADMIN_USER",
                                                                     "name": "tododb-secrets"
                                                                 ]
-                                                            ]],[[
+                                                            ],[
                                                             "name": "database-admin-password",
                                                             "valueFrom": [
                                                                 "secretKeyRef": [
                                                                     "key": "MONGODB_CLUSTER_ADMIN_PASSWORD",
                                                                     "name": "tododb-secrets"
                                                                 ]    
-                                                            ]]
+                                                            ]
                                                             ]
                                                          ]
-                                                        ]
                                                         ]
                                                     ]
                                                 ]
