@@ -1,13 +1,13 @@
 apiVersion: psmdb.percona.com/v1-4-0
 kind: PerconaServerMongoDB
 metadata:
-  name: my-cluster-name
+  name: tododb
 spec:
   image: 'percona/percona-server-mongodb-operator:1.4.0-mongod4.2'
   imagePullPolicy: Always
   allowUnsafeConfigurations: false
   secrets:
-    users: my-cluster-name-secrets
+    users: tododb-secrets
   pmm:
     enabled: false
     image: 'percona/percona-server-mongodb-operator:1.4.0-pmm'
@@ -46,7 +46,7 @@ spec:
     security:
       redactClientLogData: false
       enableEncryption: true
-      encryptionKeySecret: my-cluster-name-mongodb-encryption-key
+      encryptionKeySecret: tododb-mongodb-encryption-key
       encryptionCipherMode: AES256-CBC
     setParameter:
       ttlMonitorSleepSecs: 60

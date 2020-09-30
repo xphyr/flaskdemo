@@ -154,8 +154,8 @@ pipeline {
                 expression {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
-                            // return !openshift.selector( 'secret/my-cluster-name-secrets' ).exists()
-                            return !openshift.selector( 'PerconaServerMongoDB/my-cluster-name' ).exists()
+                            // return !openshift.selector( 'secret/tododb-secrets' ).exists()
+                            return !openshift.selector( 'PerconaServerMongoDB/tododb' ).exists()
                         }
                     }
                 }
@@ -164,9 +164,9 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('flaskstaging') {
-                            openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
+                            openshift.create( readFile( 'psmdb/tododb-psmdb.yaml' ) )
                             sleep(10)
-                            while( openshift.selector('PerconaServerMongoDB/my-cluster-name').object().status.state != "ready" ) {
+                            while( openshift.selector('PerconaServerMongoDB/tododb').object().status.state != "ready" ) {
                                sleep(10)
                             }
                         }
@@ -206,13 +206,22 @@ pipeline {
                                                     "containers":[
                                                         ["name":"flaskdemo-staging",
                                                          "resources":[:],
-                                                         "envFrom":[
-                                                            ["secretRef": [
-                                                                "name": "mongodb"
-                                                            ]
-                                                            ]
-                                                          ]
-                                                        ]
+                                                        "env":[[
+                                                            "name": "database-user",
+                                                            "valueFrom": [
+                                                                "secretKeyRef": [
+                                                                    "key": "MONGODB_CLUSTER_ADMIN_USER",
+                                                                    "name": "tododb-secrets"
+                                                                ]
+                                                            ],[
+                                                            "name": "database-admin-password",
+                                                            "valueFrom": [
+                                                                "secretKeyRef": [
+                                                                    "key": "MONGODB_CLUSTER_ADMIN_PASSWORD",
+                                                                    "name": "tododb-secrets"
+                                                                ]    
+                                                            ] 
+                                                        ]]
                                                     ]
                                                 ]
                                             ]
@@ -261,7 +270,7 @@ pipeline {
                 expression {
                     openshift.withCluster() {
                         openshift.withProject('flaskproduction') {
-                            return !openshift.selector( 'PerconaServerMongoDB/my-cluster-name' ).exists()
+                            return !openshift.selector( 'PerconaServerMongoDB/tododb' ).exists()
                         }
                     }
                 }
@@ -270,9 +279,9 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject('flaskproduction') {
-                            openshift.create( readFile( 'psmdb/test-psmdb.yaml' ) )
+                            openshift.create( readFile( 'psmdb/tododb-psmdb.yaml' ) )
                             sleep(10)
-                            while( openshift.selector('PerconaServerMongoDB/my-cluster-name').object().status.state != "ready" ) {
+                            while( openshift.selector('PerconaServerMongoDB/tododb').object().status.state != "ready" ) {
                                sleep(10)
                             }
                         }
