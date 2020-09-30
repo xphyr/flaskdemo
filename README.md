@@ -84,16 +84,31 @@ git push
 
 ## Deploying the flask application
 
-Assuming that you have committed your changes as outlined above, we can now deploy the application.  Switch to the cicd project and create the buildconfig from the file you edited earlier:
+Assuming that you have committed your changes as outlined above, we can now deploy the application. There are two ways to configure this application build. The first is to use an OpenShift Jenkins Build strategy. The Jenkins Build Strategy is a way to create a Jenkins job in an OpenShift hosted Jenkins server with some yaml. This is a quick way to create a Jenkins job but as of OpenShift 4.5 is [deprecated](https://docs.openshift.com/container-platform/4.5/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies) It is documented here for completeness, and does still work. However it is suggested that you follow the instructions labeled "Deploying Using Jenkins Pipeline UI" for long term support.
+
+### Deploying Using Jenkins Build Strategy
+  Switch to the cicd project and create the buildconfig from the file you edited earlier:
 
 ```
 oc project cicd
 oc create -f flask_pipeline_bc.yaml
 ```
 
-Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins.  You should find a folder called "cicd", select that and you should now have a pipeline called "cicd/spring-sample-app-pipeline".  Select the pipeline, and then click "Build Now".
+Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins.  You should find a folder called "cicd", select that and you should now have a pipeline called "cicd/spring-sample-app-pipeline".
 
-At this point, you should see a Jenkins job start. Depending on the speed of your cluster this build process may take a few minutes.
+### Deploying Using Jenkins Pipeline UI
+
+Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins. 
+1. Select New Item
+2. Enter "FlaskDemo" and select "Pipeline Project" then Click OK
+3. Under "Pipeline" select "Pipeline from SCM"
+4. Under SCM select "Git"
+5. Enter YOUR repository URL (eg: `https://github.com/xphyr/flaskdemo` )
+6. Click Save
+
+### Building your application
+
+Now that you have created your Jenkins job (either via a build config, or via the Jenkins GUI) we can build the application. Select the build (either cicd/flask-sample-app-pipeline, or FlaskDemo) and click "Build Now".
 
 Once the build completes successfully, we need to get the route to access the application. Run the following command:
 
@@ -128,7 +143,7 @@ Go ahead and commit this change to your repo `git commit -am "updating source" &
 
 So now we have a pipeline that will watch for code changes and promote those changes in to our Development deployment, but what if we want to take this further? We can make this a multi-stage pipeline, promoting the code into a Staging environment, and finally after human approval, into Production.
 
-Edit your Jenkins file and remove two lines from the file (lines 94 and 190):
+Edit your Jenkins file and remove two lines from the file (lines 131 and 285):
 * "    /* - we will remove this later"
 * "        we will remove this line later */"
 
