@@ -206,7 +206,7 @@ pipeline {
                                                     "containers":[
                                                         ["name":"flaskdemo-staging",
                                                          "resources":[:],
-                                                        "env":[[
+                                                         "env":[[
                                                             "name": "database-user",
                                                             "valueFrom": [
                                                                 "secretKeyRef": [
@@ -221,8 +221,11 @@ pipeline {
                                                                     "name": "tododb-secrets"
                                                                 ]    
                                                             ] 
-                                                        ]]
+                                                            ]
+                                                        ]
+                                                         ]
                                                     ]
+                                                ]
                                                 ]
                                             ]
                                         ]
