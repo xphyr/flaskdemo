@@ -213,7 +213,7 @@ pipeline {
                                                                     "key": "MONGODB_CLUSTER_ADMIN_USER",
                                                                     "name": "tododb-secrets"
                                                                 ]
-                                                            ]],[[
+                                                            ]],[
                                                             "name": "database-admin-password",
                                                             "valueFrom": [
                                                                 "secretKeyRef": [
@@ -221,8 +221,9 @@ pipeline {
                                                                     "name": "tododb-secrets"
                                                                 ]    
                                                             ]
-                                                            ]]
-                                                         ]
+                                                            ]
+                                                            ]
+
                                                         ]
                                                     ]
                                                 ]
