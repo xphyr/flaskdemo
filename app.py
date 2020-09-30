@@ -18,7 +18,7 @@ if (mongoserver=="127.0.0.1"):
 	client = MongoClient("mongodb://" + mongoserver + ":" + mongoport) #host uri
 else:
 	client = MongoClient(mongoserver,
-	                     username=mongouser,
+	                     username="admin",
 	                     password=mongopass)
 
 db = client[mongodb]    #Select the database
