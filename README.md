@@ -95,7 +95,13 @@ Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into
 
 At this point, you should see a Jenkins job start. Depending on the speed of your cluster this build process may take a few minutes.
 
-Once the build completes successfully, we need to go add a route to make the application accessible to the outside world
+Once the build completes successfully, we need to get the route to access the application. Run the following command:
+
+```
+oc get route -n flaskdemo
+```
+
+Now open a web browser using the route from the command above and access your development application, with Mongo Database. Try it out, add some tasks to the application, and mark some of them complete. Leave this page open, we will use it again shortly.
 
 ### Update the Pipeline configuration to poll the SCM
 
