@@ -6,20 +6,6 @@ This is a pseudo-fork of the code from here [Simple Python Flask Program with Mo
 
 This application also requires a MongoDB database running to store the tasks you add to the application. We will deploy an ephemeral MongoDB server as part of this pipeline, and include the authentication as part of the application deployment.
 
-## Local Setup and Testing
-
-The following assumes the use of Python3.  
-
-```
-git clone
-cd flaskdemo
-python -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
-docker run -d -p 27017:27017 -v ~/data:/data/db --name mongodb mongo
-python app.py
-```
-
 ## Dockerfile
 
 For our Python3 based Flask application, there is no build/compile step for the code itself, but we do need to prepare the container with the requirements for Flask. This can be done by leveraging the requirements.txt file and then copying the application Python files into the container. The Dockerfile builds on the UBI8 base images from Red Hat.
@@ -68,7 +54,7 @@ In your favorite code editor, update line 2 in the Jenkins file to point to YOUR
 def templatePath = 'https://github.com/xphyr/flaskdemo'
 ```
 
-Also update the URI reference in the spring_boot_pipeline_bc.yaml to point to your github repo as well:
+Also update the URI reference in the flask_pipeline_bc.yaml to point to your github repo as well:
 
 ```
     git:
@@ -94,7 +80,7 @@ oc project cicd
 oc create -f flask_pipeline_bc.yaml
 ```
 
-Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins.  You should find a folder called "cicd", select that and you should now have a pipeline called "cicd/spring-sample-app-pipeline".
+Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins.  You should find a folder called "cicd", select that and you should now have a pipeline called "cicd/flask-sample-app-pipeline".
 
 ### Deploying Using Jenkins Pipeline UI
 
@@ -157,3 +143,17 @@ oc get route -n flaskproduction
 ```
 
 For each route you got above you should now see a web page for "Staging" and one for "Production".  Go ahead and change the message in app.py one more time and commit/push your change and check to see that the change is propagated all the way through your new pipeline.
+
+## Local Setup and Testing - Optional
+
+If you want to do any local testing, the following steps can be used to test locally on a machine with Docker.  Note that this assumes the use of Python3 for setting up a venv.  
+
+```
+git clone
+cd flaskdemo
+python -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+docker run -d -p 27017:27017 -v ~/data:/data/db --name mongodb mongo
+python app.py
+```
