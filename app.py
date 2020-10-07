@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 title = "TODO sample application with Flask and MongoDB"
-heading = "TODO Reminder with Flask and MongoDB - by Mark"
+heading = "TODO Reminder with Flask and MongoDB"
 
 mongoserver = os.getenv("MONGODB_SERVICE_HOST", default = "127.0.0.1")
 mongoport = os.getenv("MONGODB_SERVICE_PORT", default = "27017")
