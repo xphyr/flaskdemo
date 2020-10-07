@@ -16,7 +16,7 @@ pipeline {
         stage('preamble') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             echo "Using project: ${openshift.project()}"
                         }
@@ -27,7 +27,7 @@ pipeline {
         stage('cleanup') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             // delete everything with this template label
                             openshift.selector("all", [ template : templateName ]).delete()
@@ -44,7 +44,7 @@ pipeline {
         stage('database setup'){
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             if (!openshift.selector("dc", "mongodb").exists()) {
                                 openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
@@ -58,7 +58,7 @@ pipeline {
         stage('create') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             if (openshift.selector("bc", templateName).exists()) {
                                 openshift.selector("bc", templateName).startBuild();
@@ -103,7 +103,7 @@ pipeline {
         stage('build') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             def builds = openshift.selector("bc", templateName).related('builds')
                             builds.untilEach(1) {
@@ -117,7 +117,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskdemo') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}"]).untilEach(1) {
@@ -132,7 +132,7 @@ pipeline {
         stage('Tag for Staging') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         // openshift.withProject('flaskdemo') {
                             openshift.tag("flaskdemo/${templateName}:latest", "flaskstaging/${templateName}-staging:latest")
                         // }
@@ -143,7 +143,7 @@ pipeline {
         stage ('Create Staging Deployment') {
             when {
                 expression {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskstaging') {
                             return !openshift.selector("pod", [deployment : "${templateName}-staging"]).exists()
                         }
@@ -152,7 +152,7 @@ pipeline {
             }
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskstaging') {
                             openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-staging:latest").narrow('svc').expose()
@@ -192,7 +192,7 @@ pipeline {
         stage('Validate Staging') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskstaging') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}-staging"]).untilEach(1) {
@@ -211,7 +211,7 @@ pipeline {
         stage('Tag for Promotion') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         // openshift.withProject('flaskdemo') {
                             openshift.tag("flaskdemo/${templateName}:latest", "flaskproduction/${templateName}-production:latest")
                         // }
@@ -222,7 +222,7 @@ pipeline {
         stage ('Create Production Deployment') {
             when {
                 expression {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskproduction') {
                             return !openshift.selector("pod", [deployment : "${templateName}-production"]).exists()
                         }
@@ -231,7 +231,7 @@ pipeline {
             }
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskproduction') {
                             openshift.newApp("mongodb-ephemeral", "-p MONGODB_DATABASE=mongodb")
                             openshift.newApp("${templateName}-production:latest").narrow('svc').expose()
@@ -271,7 +271,7 @@ pipeline {
         stage('Validate Production') {
             steps {
                 script {
-                    openshift.withCluster() {
+                    openshift.withCluster("CICDDemo") {
                         openshift.withProject('flaskproduction') {
                             // def rm = openshift.selector("deploy", templateName).rollout()
                             openshift.selector("pod", [deployment : "${templateName}-production"]).untilEach(1) {
