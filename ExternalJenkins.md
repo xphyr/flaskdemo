@@ -79,6 +79,8 @@ Now in Jenkins lets create a new job.
 3. Under "Pipeline" select "Pipeline from SCM"
 4. Under SCM select "Git"
 5. Enter YOUR repository URL (eg: `https://github.com/xphyr/flaskdemo` )
-6. Click Save
+6. Ensure that "Lightweight checkout" is NOT checked
+   (in order to properly use scm polling you can not use Lightweight checkout)
+7. Click Save
 
 You should now be able to run a build by selecting "Build Now"
