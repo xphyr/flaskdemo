@@ -21,7 +21,7 @@ To set up for this demo, we will be creating four projects in your cluster:
 
 Run the following commands on your machine to get the environment set up
 
-```
+``` shell
 oc login
 oc new-project cicd --display-name='CICD Jenkins' --description='CICD Jenkins'
 oc new-app jenkins-ephemeral
@@ -35,7 +35,7 @@ oc new-project flaskproduction --display-name='Production' --description='Produc
 
 We need to give the Jenkins service account permissions to edit configurations in our target projects:
 
-```
+``` shell
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
     -n flaskdemo
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
@@ -44,26 +44,28 @@ oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins \
     -n flaskproduction
 ```
 
+**NOTE:** It is possible to use your own Jenkins server. Instructions on how to configure an existing Jenkins server follow the instructions listed [here](https://github.com/xphyr/flaskdemo/blob/master/ExternalJenkins.md)
+
 ## Setting up your development environment
 
 Now that we have Jenkins setup in your cluster, lets start by cloning the following github repo: https://github.com/xphyr/flaskdemo and checkout a copy of the code local to your machine.
 
 In your favorite code editor, update line 2 in the Jenkins file to point to YOUR github repo:
 
-```
+``` groovy
 def templatePath = 'https://github.com/xphyr/flaskdemo'
 ```
 
 Also update the URI reference in the flask_pipeline_bc.yaml to point to your github repo as well:
 
-```
+``` groovy
     git:
         uri: https://github.com/xphyr/flaskdemo
 ```
 
 Before moving onto the next steps, commit the changes above to your repo:
 
-```
+``` shell
 git commit -am "updating to point to my repo"
 git push
 ```
@@ -73,9 +75,10 @@ git push
 Assuming that you have committed your changes as outlined above, we can now deploy the application. There are two ways to configure this application build. The first is to use an OpenShift Jenkins Build strategy. The Jenkins Build Strategy is a way to create a Jenkins job in an OpenShift hosted Jenkins server with some yaml. This is a quick way to create a Jenkins job but as of OpenShift 4.5 is [deprecated](https://docs.openshift.com/container-platform/4.5/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies) It is documented here for completeness, and does still work. However it is suggested that you follow the instructions labeled "Deploying Using Jenkins Pipeline UI" for long term support.
 
 ### Deploying Using Jenkins Build Strategy
-  Switch to the cicd project and create the buildconfig from the file you edited earlier:
 
-```
+Switch to the cicd project and create the buildconfig from the file you edited earlier:
+
+``` shell
 oc project cicd
 oc create -f flask_pipeline_bc.yaml
 ```
@@ -84,7 +87,8 @@ Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into
 
 ### Deploying Using Jenkins Pipeline UI
 
-Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins. 
+Using the Jenkins URI you gathered from the Jenkins Setup instructions, log into Jenkins.
+
 1. Select New Item
 2. Enter "FlaskDemo" and select "Pipeline Project" then Click OK
 3. Under "Pipeline" select "Pipeline from SCM"
@@ -100,7 +104,7 @@ Now that you have created your Jenkins job (either via a build config, or via th
 
 Once the build completes successfully, we need to get the route to access the application. Run the following command:
 
-```
+``` shell
 oc get route -n flaskdemo
 ```
 
@@ -121,7 +125,7 @@ Now that we have a build pipeline set up, lets make a small change to the applic
 
 In your favorite editor, open app.py and edit line 8. Update the heading variable so that it has your name in it as shown below:
 
-```
+``` python
 heading = "TODO Reminder with Flask and MongoDB - by YourNameHere"
 ```
 
@@ -132,6 +136,7 @@ Go ahead and commit this change to your repo `git commit -am "updating source" &
 So now we have a pipeline that will watch for code changes and promote those changes in to our Development deployment, but what if we want to take this further? We can make this a multi-stage pipeline, promoting the code into a Staging environment, and finally after human approval, into Production.
 
 Edit your Jenkins file and remove two lines from the file (lines 131 and 285):
+
 * "    /* - we will remove this later"
 * "        we will remove this line later */"
 
@@ -139,7 +144,7 @@ this will enable the additional build stages, commit this code to your rep and w
 
 As part of the pipeline we create a staging route and a production route, go get each of these routes and open in new windows:
 
-```
+``` shell
 oc get route -n flaskstaging
 oc get route -n flaskproduction
 ```
@@ -150,7 +155,7 @@ For each route you got above you should now see a web page for "Staging" and one
 
 If you want to do any local testing, the following steps can be used to test locally on a machine with Docker.  Note that this assumes the use of Python3 for setting up a venv.  
 
-```
+``` shell
 git clone
 cd flaskdemo
 python -m venv venv
